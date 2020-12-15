@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
-  <link rel="stylesheet" href="/main.css">
+  <link rel="stylesheet" href="/Validator/main.css">
 </head>
 
 <body>
@@ -47,19 +47,18 @@
     </form>
 
   </div>
-  <script src="/Validation.js"></script>
+  <script src="/Validator/Validation.js"></script>
   <script>
-
   Validator({
         form: '#form-1',
         errorSelector: '.form-message',
         rules: [
-        Validator.isRequired('#fullname'),
+        Validator.isRequired('#fullname', 'Vui lòng nhập tên đầy đủ của bạn'),
         Validator.isEmail('#email'),
         Validator.minLength('#password', 6),
         Validator.isConfirmed('#password_confirmation', function () {
-              return 'f8';
-          })
+              return document.querySelector('#form-1 #password').value; // so sánh với value của password
+          }, 'Mật khẩu nhập lại không chính xác')
         ]
       })
       
