@@ -2,12 +2,23 @@
 // Đối tượng Validator
 function Validator(options)  {  //options : object cuả validate
 
-    var selectorRules = {};
+    var selectorRules = {}; // selectorRules is object
 
     // Hàm thực hiện validate
     function validate(inputElement, rule) {
-        var errorMessage = rule.test(inputElement.value);     
+        var errorMessage;   
         var errorElement = inputElement.parentElement.querySelector(options.errorSelector);
+        
+        // Lấy ra các rules của selector
+        var rules = selectorRules[rule.selector]
+        
+        // Lặp qua từng rules và kiểm tra
+        // Nếu có lỗi thì dừng việc kiểm tra
+        for( var i = 0; i < rules.length; i++){
+            errorMessage = rules[i](inputElement.value) //// value : inputElement.value // rules[i] = rule.test
+            if(errorMessage) break;
+        }
+
         // parentElement : truy ngược về thẻ cha
         if(errorMessage){
             errorElement.innerText = errorMessage;
@@ -23,11 +34,21 @@ function Validator(options)  {  //options : object cuả validate
 
     if(formElement) { // Nếu có formElement
 
+        // khi submit form
+        formElement.onsubmit = function (e) {
+            e.preventDefault();
+            
+        }
+
+        // Lặp qua mỗi rule và xử lí các sự kiện
         options.rules.forEach(function (rule) { //Duyệt qua từng rules của object
-
-            // Lưu lại các rules cho mỗi input
-            selectorRules[rule.selector] = rule.test;
-
+            
+            // Lưu lại các rules cho mỗi input vào selectorRules
+            if (Array.isArray(selectorRules[rule.selector])) {
+                selectorRules[rule.selector].push(rule.test);
+            } else {
+                selectorRules[rule.selector] = [rule.test];
+            }
             
             var inputElement = formElement.querySelector(rule.selector); //rule chọc vào selector của các hàm đã được định nghĩa
             // rule trả về  hàmcủa mảng đã được định nghĩa
@@ -35,7 +56,7 @@ function Validator(options)  {  //options : object cuả validate
             if(inputElement) {
                 // xử lý trường hợp blur ra khỏi input
                 inputElement.onblur = function () {
-                    // value : inputElement.value
+                    
                     // Test Function: rule.test
                     validate(inputElement, rule);
                 }
@@ -48,9 +69,6 @@ function Validator(options)  {  //options : object cuả validate
                 }
             }
         });
-
-        console.log(selectorRules);
-        
     }
 
 }
