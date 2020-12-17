@@ -27,6 +27,8 @@ function Validator(options)  {  //options : object cuả validate
             errorElement.innerText = '';
             inputElement.parentElement.classList.remove('invalid');
         }
+
+        return !errorMessage;
     }
 
     // Lấy Element của form cần validate
@@ -37,7 +39,27 @@ function Validator(options)  {  //options : object cuả validate
         // khi submit form
         formElement.onsubmit = function (e) {
             e.preventDefault();
-            
+
+            var isFormValid = true;
+
+            // Lặp qua từng rules và validator
+            options.rules.forEach(function (rule) {
+                var inputElement = formElement.querySelector(rule.selector);
+                var isValid = validate(inputElement, rule);
+                if(!isValid) {
+                    isFormValid = false;
+                }
+            });
+
+            if(isFormValid) {
+                if(typeof options.onSubmit === 'function') {
+
+                    var enableInputs = formElement.querySelectorAll('[name]');
+                    options.onSubmit({
+                        enableInputs
+                    });
+                }
+            } 
         }
 
         // Lặp qua mỗi rule và xử lí các sự kiện

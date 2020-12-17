@@ -38,7 +38,7 @@
 
       <div class="form-group">
         <label for="password_confirmation" class="form-label">Nhập lại mật khẩu</label>
-        <input id="password_confirmation" name="password_confirmation" placeholder="Nhập lại mật khẩu" type="password"
+        <input id="password_confirmation"  name="password_confirmation" placeholder="Nhập lại mật khẩu" type="password"
           class="form-control">
         <span class="form-message"></span>
       </div>
@@ -61,7 +61,10 @@
         Validator.isConfirmed('#password_confirmation', function () {
               return document.querySelector('#form-1 #password').value; // so sánh với value của password
           }, 'Mật khẩu nhập lại không chính xác')
-        ]
+        ],
+        onSubmit: function (data) {
+          console.log(data)
+        }
       })
       
   /* Var object = {
