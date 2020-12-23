@@ -52,12 +52,18 @@ function Validator(options)  {  //options : object cuả validate
             });
 
             if(isFormValid) {
+                // Trường hợp submit with JS
                 if(typeof options.onSubmit === 'function') {
-
-                    var enableInputs = formElement.querySelectorAll('[name]');
-                    options.onSubmit({
-                        enableInputs
-                    });
+                    var enableInputs = formElement.querySelectorAll('[name]'); // Lấy ra thông tin của các trường
+                    var formValues = Array.from(enableInputs).reduce(function (values, input) { // convert sang Array to use Reduce to take value in input  
+                        return (values[input.name] = input.value) && values; // input chạy từ phần tử 0
+                    }, {}); // values trong lần chạy thứ nhất là 1 object rỗng => push value of input vào object
+                    options.onSubmit(formValues); // callback formValues
+                }
+                // trường hợp submit với hành vi mặc định
+                else{
+                    // Submit với hành vi mặc định của trình duyệt
+                    formElement.submit();
                 }
             } 
         }
